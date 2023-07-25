@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns xmlns:th="http://www.w3.org/1999/xhtml" : th="http://www.thymeleaf.org">
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+    <script src="js/vendor/modernizr-3.8.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script>window.jQuery || document.write('<script src="@{/js/vendor/jquery-3.4.1.min.js}"><\/script>')</script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+<div class="container">
+    <p>글번호 : [[${view.boardId}]]</p>
+    <p id="title">제목 : [[${view.title}]]</p>
+    <p>작성자 : [[${view.name}]]</p>
+    내용 :
+    <div id="content">
+<textarea readonly="readonly"
+          class="form-control"
+          th:text="${view.content}">
+
+</textarea>
+
+    </div>
+
+    <button id="deleteBtn" class="btn btn-danger btn-sm float-right">삭제</button>
+    <button id="updateBtn" class="btn btn-info btn-sm float-right">수정</button>
+    <a href="/board/main" class="btn btn-primary btn-sm float-right">목록</a>
+    <form id="form" th:action="@{/}" method="post">
+    </form>
+
+</div>
+
+<script th:inline="javascript">
+    $(document).on('ready', function (e) {
+        var form= $("#form");
+        var boardId= [[${view.boardId}]];
+        $(document).on('click', '#deleteBtn', function (e) {
+            $('#form').attr("action","delete");
+            form.append("<input type='hidden' name='boardId' value='"+boardId+"'>");
+            form.append("<input type='hidden' name='_method' value='delete'>");
+            alert("삭제되었습니다")
+            form.submit();
+        })
+        $(document).on('click','#updateBtn',function (e) {
+            var str="<input class='form-control' width='250'" +
+                "placeholder='제목 입력' id='updateTitle'>";
+            $("#title").html(str);
+            str="<textarea class='form-control' placeholder='내용 입력'" +
+                "id='updateContent'></textarea>";
+            $("#content").html(str);
+            $("#updateBtn").attr("id","updateConfirmBtn");
+
+        })
+
+        $(document).on('click','#updateConfirmBtn',function (e){
+            $('#form').attr("action","update");
+            var updateTitle= $('#updateTitle').val();
+            var updateContent=$('#updateContent').val();
+            form.append("<input type='hidden' name='boardId' value='"+boardId+"'>");
+            form.append("<input type='hidden' name='_method' value='put'>");
+            form.append("<input type='hidden' name='title' value='"+updateTitle+"'>");
+            form.append("<input type='hidden' name='content' value='"+updateContent+"'>");
+            form.submit();
+
+        })
+    })
+
+</script>
+
+</body>
+</html>
